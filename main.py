@@ -1,5 +1,6 @@
 import requests 
 from rich import print 
+from datetime import datetime
 
 
 def display_current_weather(city): 
@@ -14,10 +15,26 @@ def display_current_weather(city):
   
   print(f"The temperature in {current_weather_city} is {round(current_weather_temperature)}°C")
 
+def display_forecast_weather(city_name): 
+  api_key = "0487517ao9045tca47fb9963d1b4be37"
+  api_url = f"https://api.shecodes.io/weather/v1/forecast?query={city_name}&key={api_key}"
+
+  response = requests.get(api_url)
+  forecast_weather_data = response.json()
+
+  for day in forecast_weather_data['daily']: 
+    timestamp = day['time']
+    date = datetime.fromtimestamp(timestamp)
+    formatted_day = date.strftime("%A")
+    temperature = day['temperature']['day']
+  
+    print(f"{formatted_day}: {round(temperature)}°C")
+
 city_name = input("Enter a city: ")
 city_name = city_name.strip()
 
 if city_name: 
   display_current_weather(city_name)
+  display_forecast_weather(city_name)
 else: 
   print("Please try again with a city")
